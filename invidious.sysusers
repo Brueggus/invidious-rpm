@@ -1,0 +1,2 @@
+#Type  Name     ID  GECOS                   Home directory    Shell
+u      invidious  -   "invidious default user"  /var/lib/invidious  /sbin/nologin

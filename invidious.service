@@ -1,0 +1,14 @@
+[Unit]
+Description=Invidious
+After=network-online.target
+
+[Service]
+Type=simple
+User=invidious
+Group=invidious
+WorkingDirectory=/var/lib/invidious
+ExecStart=/var/lib/invidious/invidious
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
