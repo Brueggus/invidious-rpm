@@ -16,6 +16,7 @@ ExclusiveArch: x86_64
 
 
 BuildRequires:  pkg-config
+BuildRequires:  git
 BuildRequires:  crystal1.9
 BuildRequires:  openssl-devel
 BuildRequires:  libevent-devel
