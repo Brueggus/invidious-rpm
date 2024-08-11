@@ -3,7 +3,7 @@
 
 Name:           invidious
 Version:        2.0.0
-Release:        1+%{git_commit}%{?dist}
+Release:        2+%{git_commit}%{?dist}
 Summary:        An alternative front-end to YouTube.
 License:        AGPL-3.0
 URL:            https://github.com/iv-org/invidious
@@ -53,7 +53,7 @@ An alternative front-end to YouTube.
 %autosetup -n %{name}-%{git_commit}
 sed --regexp-extended --in-place \
   --expression='s/^CURRENT_BRANCH.+$/CURRENT_BRANCH = "master"/' \
-  --expression='s/^CURRENT_VERSION.+$/CURRENT_VERSION = "%{verion}"/' \
+  --expression='s/^CURRENT_VERSION.+$/CURRENT_VERSION = "%{version}"/' \
   --expression='s/^CURRENT_COMMIT.+$/CURRENT_COMMIT = "%{git_commit}"/' \
   --expression='s/^ASSET_COMMIT.+$/ASSET_COMMIT = "%{git_commit}"/' \
   src/invidious.cr
