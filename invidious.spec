@@ -15,6 +15,7 @@ Source2:        %{name}.service
 ExclusiveArch: x86_64
 
 
+BuildRequires:  systemd-rpm-macros
 BuildRequires:  pkg-config
 BuildRequires:  git
 BuildRequires:  crystal1.9
@@ -42,7 +43,6 @@ Requires:  librsvg2
 Requires:  sqlite
 Requires:  zlib
 Requires:  open-sans-fonts
-Requires:  acl
 
 
 %description
