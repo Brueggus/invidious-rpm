@@ -3,7 +3,7 @@
 
 Name:           invidious
 Version:        2.0.0
-Release:        %{git_commit}%{?dist}
+Release:        1+%{git_commit}%{?dist}
 Summary:        An alternative front-end to YouTube.
 License:        AGPL-3.0
 URL:            https://github.com/iv-org/invidious
@@ -70,6 +70,8 @@ crystal build ./src/invidious.cr \
 %install
 install --directory %{buildroot}%{_sharedstatedir}/invidious/config
 install --preserve-timestamps -D config/config.example.yml %{buildroot}%{_sharedstatedir}/invidious/config/config.example.yml
+install --directory %{buildroot}%{_sharedstatedir}/invidious/config/sql
+cp --recursive config/sql/* %{buildroot}%{_sharedstatedir}/invidious/config/sql/
 install --directory %{buildroot}%{_sharedstatedir}/invidious/assets
 cp --recursive assets/* %{buildroot}%{_sharedstatedir}/invidious/assets/
 install --directory %{buildroot}%{_sharedstatedir}/invidious/locales
@@ -87,6 +89,7 @@ install --preserve-timestamps -D %{SOURCE2} %{buildroot}%{_unitdir}/invidious.se
 %dir %{_sharedstatedir}/invidious/config
 %defattr(0440,invidious,invidious,0550)
 %config(noreplace) %{_sharedstatedir}/invidious/config/config.example.yml
+%{_sharedstatedir}/invidious/config/sql/
 %{_sharedstatedir}/invidious/assets/
 %{_sharedstatedir}/invidious/locales/
 %defattr(0550,invidious,invidious,-)
