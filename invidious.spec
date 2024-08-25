@@ -1,9 +1,9 @@
-%global git_commit e319c35f097e08590e705378c7e5b479720deabc
+%global git_commit 3e17d04875570448edf42641175d297ec2ba2aa1
 
 
 Name:           invidious
-Version:        2.0.0
-Release:        4+%{git_commit}%{?dist}
+Version:        2.20240825.1
+Release:        1+%{git_commit}%{?dist}
 Summary:        An alternative front-end to YouTube.
 License:        AGPL-3.0
 URL:            https://github.com/iv-org/invidious
