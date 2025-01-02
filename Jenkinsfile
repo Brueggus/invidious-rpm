@@ -23,4 +23,20 @@ pipeline {
       }
     }
   }
+  post {
+    failure {
+      emailext(
+        to: '$DEFAULT_RECIPIENTS',
+        subject: '$DEFAULT_SUBJECT',
+        body: '$DEFAULT_CONTENT',
+      )
+    }
+    fixed {
+      emailext(
+        to: '$DEFAULT_RECIPIENTS',
+        subject: '$DEFAULT_SUBJECT',
+        body: '$DEFAULT_CONTENT',
+      )
+    }
+  }
 }
