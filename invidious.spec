@@ -1,8 +1,8 @@
-%global git_commit 23ff6135bb4304c6b5e9de6fc06e67bfadc9651a
+%global git_commit 0c07e9d27ac773d8423143c11bbcd36eaae0f8e4
 
 
 Name:           invidious
-Version:        2.20250326.0
+Version:        2.20250404.0
 Release:        1+%{git_commit}%{?dist}
 Summary:        An alternative front-end to YouTube.
 License:        AGPL-3.0
@@ -18,7 +18,7 @@ ExclusiveArch: x86_64
 BuildRequires:  systemd-rpm-macros
 BuildRequires:  pkg-config
 BuildRequires:  git
-BuildRequires:  crystal1.9
+BuildRequires:  crystal1.12
 BuildRequires:  openssl-devel
 BuildRequires:  libevent-devel
 BuildRequires:  libxml2-devel
