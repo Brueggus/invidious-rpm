@@ -7,18 +7,34 @@ pipeline {
     stage('build') {
       parallel {
         stage('fedora-41') {
-          agent { label 'fedora-41-rpm' }
+          agent { label 'fedora-41-rpm-isolated' }
           steps {
             sh 'sudo wget --directory-prefix=/etc/yum.repos.d https://download.opensuse.org/repositories/devel:/languages:/crystal/Fedora_41/devel:languages:crystal.repo'
             sh 'rpmtool build invidious.spec'
           }
         }
         stage('fedora-42') {
-          agent { label 'fedora-42-rpm' }
+          agent { label 'fedora-42-rpm-isolated' }
           steps {
             sh 'sudo wget --directory-prefix=/etc/yum.repos.d https://download.opensuse.org/repositories/devel:/languages:/crystal/Fedora_42/devel:languages:crystal.repo'
             sh 'rpmtool build invidious.spec'
           }
+        }
+      }
+    }
+    stage('copr') {
+      agent { label 'fedora-42-rpm' }
+      when {
+        expression { env.GIT_BRANCH == 'origin/master' }
+      }
+      steps {
+        withCredentials([file(credentialsId: 'pgdev-copr-api', variable: '__COPR_API_CONFIG')]) {
+          sh '''
+            set -euo pipefail
+            [ ! -e ~/.config ] && mkdir ~/.config
+            ln --symbolic "$__COPR_API_CONFIG" ~/.config/copr
+            copr build-package --nowait --background --name invidious pgdev/invidious
+          '''
         }
       }
     }
