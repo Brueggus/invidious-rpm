@@ -30,10 +30,7 @@ pipeline {
       steps {
         withCredentials([file(credentialsId: 'pgdev-copr-api', variable: '__COPR_API_CONFIG')]) {
           sh '''
-            set -euo pipefail
-            [ ! -e ~/.config ] && mkdir ~/.config
-            ln --symbolic "$__COPR_API_CONFIG" ~/.config/copr
-            copr build-package --nowait --background --name invidious pgdev/invidious
+            copr --config "$__COPR_API_CONFIG" build-package --nowait --background --name invidious pgdev/invidious
           '''
         }
       }
