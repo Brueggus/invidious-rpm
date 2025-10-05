@@ -6,36 +6,64 @@ pipeline {
   stages {
     stage('build') {
       parallel {
-        stage('fedora-41') {
-          agent { label 'fedora-41-rpm-large-isolated' }
+        stage('fedora-41-x86_64') {
+          agent {
+            node {
+              label 'fedora-41-rpm-large-isolated'
+              customWorkspace "${env.JOB_NAME}/${env.BUILD_ID}"
+            }
+          }
           steps {
             sh '''
               sudo wget --directory-prefix=/etc/yum.repos.d https://download.opensuse.org/repositories/devel:/languages:/crystal/Fedora_41/devel:languages:crystal.repo
               rpmtool build invidious.spec
-              mkdir --parents "${WORKSPACE}/artifacts"
-              cp --verbose ${HOME}/rpmbuild/SRPMS/*.rpm "${WORKSPACE}/artifacts/"
-              cp --verbose ${HOME}/rpmbuild/RPMS/**/*.rpm "${WORKSPACE}/artifacts/"
+              mkdir --parents "${WORKSPACE}/artifacts/f41"
+              mv "${HOME}/rpmbuild/SRPMS" "${WORKSPACE}/artifacts/f41/"
+              mv "${HOME}/rpmbuild/RPMS" "${WORKSPACE}/artifacts/f41/"
             '''
-            archiveArtifacts artifacts: 'artifacts/**/*', fingerprint: true, onlyIfSuccessful: true
+            stash includes: 'artifacts/f41/**/*', name: 'f41-x86_64'
           }
         }
-        stage('fedora-42') {
-          agent { label 'fedora-42-rpm-large-isolated' }
+        stage('fedora-42-x86_64') {
+          agent {
+            node {
+              label 'fedora-42-rpm-large-isolated'
+              customWorkspace "${env.JOB_NAME}/${env.BUILD_ID}"
+            }
+          }
           steps {
             sh '''
               sudo wget --directory-prefix=/etc/yum.repos.d https://download.opensuse.org/repositories/devel:/languages:/crystal/Fedora_42/devel:languages:crystal.repo
               rpmtool build invidious.spec
-              mkdir --parents "${WORKSPACE}/artifacts"
-              cp --verbose ${HOME}/rpmbuild/SRPMS/*.rpm "${WORKSPACE}/artifacts/"
-              cp --verbose ${HOME}/rpmbuild/RPMS/**/*.rpm "${WORKSPACE}/artifacts/"
+              mkdir --parents "${WORKSPACE}/artifacts/f42"
+              mv "${HOME}/rpmbuild/SRPMS" "${WORKSPACE}/artifacts/f42/"
+              mv "${HOME}/rpmbuild/RPMS" "${WORKSPACE}/artifacts/f42/"
             '''
-            archiveArtifacts artifacts: 'artifacts/**/*', fingerprint: true, onlyIfSuccessful: true
+            stash includes: 'artifacts/f42/**/*', name: 'f42-x86_64'
           }
         }
       }
     }
+    stage('publish') {
+      agent {
+        node {
+          label 'fedora-42'
+          customWorkspace "${env.JOB_NAME}/${env.BUILD_ID}"
+        }
+      }
+      steps {
+        unstash 'f41-x86_64'
+        unstash 'f42-x86_64'
+        archiveArtifacts artifacts: 'artifacts/**/*', fingerprint: true, onlyIfSuccessful: true
+      }
+    }
     stage('copr') {
-      agent { label 'fedora-42-rpm' }
+      agent {
+        node {
+          label 'fedora-42-rpm'
+          customWorkspace "${env.JOB_NAME}/${env.BUILD_ID}"
+        }
+      }
       when {
         allOf {
           expression { params.COPR_BUILD == true }
