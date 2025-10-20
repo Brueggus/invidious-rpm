@@ -18,7 +18,7 @@ ExclusiveArch: x86_64
 BuildRequires:  systemd-rpm-macros
 BuildRequires:  pkg-config
 BuildRequires:  git
-BuildRequires:  crystal1.12
+BuildRequires:  crystal1.16
 BuildRequires:  openssl-devel
 BuildRequires:  libevent-devel
 BuildRequires:  libxml2-devel
