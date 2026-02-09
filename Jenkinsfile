@@ -6,40 +6,22 @@ pipeline {
   stages {
     stage('build') {
       parallel {
-        stage('fedora-41-x86_64') {
+        stage('fedora-43-x86_64') {
           agent {
             node {
-              label 'fedora-41-rpm-large-isolated'
+              label 'fedora-43-rpm-large-isolated'
               customWorkspace "${env.JOB_NAME}/${env.BUILD_ID}"
             }
           }
           steps {
             sh '''
-              sudo wget --directory-prefix=/etc/yum.repos.d https://download.opensuse.org/repositories/devel:/languages:/crystal/Fedora_41/devel:languages:crystal.repo
+              sudo wget --directory-prefix=/etc/yum.repos.d https://download.opensuse.org/repositories/devel:/languages:/crystal/Fedora_43/devel:languages:crystal.repo
               rpmtool build invidious.spec
-              mkdir --parents "${WORKSPACE}/artifacts/fedora/41"
-              mv "${HOME}/rpmbuild/SRPMS" "${WORKSPACE}/artifacts/fedora/41/"
-              mv "${HOME}/rpmbuild/RPMS" "${WORKSPACE}/artifacts/fedora/41/"
+              mkdir --parents "${WORKSPACE}/artifacts/fedora/43"
+              mv "${HOME}/rpmbuild/SRPMS" "${WORKSPACE}/artifacts/fedora/43/"
+              mv "${HOME}/rpmbuild/RPMS" "${WORKSPACE}/artifacts/fedora/43/"
             '''
-            stash includes: 'artifacts/fedora/41/**/*', name: 'fedora-41-x86_64'
-          }
-        }
-        stage('fedora-42-x86_64') {
-          agent {
-            node {
-              label 'fedora-42-rpm-large-isolated'
-              customWorkspace "${env.JOB_NAME}/${env.BUILD_ID}"
-            }
-          }
-          steps {
-            sh '''
-              sudo wget --directory-prefix=/etc/yum.repos.d https://download.opensuse.org/repositories/devel:/languages:/crystal/Fedora_42/devel:languages:crystal.repo
-              rpmtool build invidious.spec
-              mkdir --parents "${WORKSPACE}/artifacts/fedora/42"
-              mv "${HOME}/rpmbuild/SRPMS" "${WORKSPACE}/artifacts/fedora/42/"
-              mv "${HOME}/rpmbuild/RPMS" "${WORKSPACE}/artifacts/fedora/42/"
-            '''
-            stash includes: 'artifacts/fedora/42/**/*', name: 'fedora-42-x86_64'
+            stash includes: 'artifacts/fedora/43/**/*', name: 'fedora-43-x86_64'
           }
         }
         stage('rocky-10-x86_64') {
@@ -65,13 +47,12 @@ pipeline {
     stage('publish') {
       agent {
         node {
-          label 'fedora-42'
+          label 'fedora-43'
           customWorkspace "${env.JOB_NAME}/${env.BUILD_ID}"
         }
       }
       steps {
-        unstash 'fedora-41-x86_64'
-        unstash 'fedora-42-x86_64'
+        unstash 'fedora-43-x86_64'
         unstash 'rocky-10-x86_64'
         archiveArtifacts artifacts: 'artifacts/**/*', fingerprint: true, onlyIfSuccessful: true
       }
@@ -79,7 +60,7 @@ pipeline {
     stage('copr') {
       agent {
         node {
-          label 'fedora-42-rpm'
+          label 'fedora-43-rpm'
           customWorkspace "${env.JOB_NAME}/${env.BUILD_ID}"
         }
       }
