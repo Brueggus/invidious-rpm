@@ -7,8 +7,8 @@ Release:        %autorelease
 Summary:        An alternative front-end to YouTube.
 License:        AGPL-3.0
 URL:            https://github.com/iv-org/invidious
-Source0:        https://github.com/iv-org/invidious/archive/refs/tags/v%{version}.tar.gz
-Source1:        %{name}.sysusers
+Source0:        https://github.com/iv-org/invidious/archive/%{git_commit}.tar.gz
+Source1:        %{name}.sysuser
 Source2:        %{name}.service
 
 
@@ -50,7 +50,7 @@ An alternative front-end to YouTube.
 
 
 %prep
-%autosetup -n %{name}-%{version}
+%autosetup -n %{name}-%{git_commit}
 sed --regexp-extended --in-place \
   --expression='s/^CURRENT_BRANCH.+$/CURRENT_BRANCH = "master"/' \
   --expression='s/^CURRENT_COMMIT.+$/CURRENT_COMMIT = "%{git_commit}"/' \
